@@ -4,6 +4,11 @@
  */
 package org.jlab.elog;
 
+import org.jlab.jlog.LogEntry;
+import org.jlab.jlog.exception.LogException;
+import org.jlab.jlog.Body;
+import org.jlab.jlog.Reference;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -166,20 +171,20 @@ public class LogEntryCLI {
       //   without alt-certificate, noqueue
       //   without alt-certificate, with queue      
       long submitResult;
-      if( line.hasOption( "cert" ) ) {
-        String certificate = line.getOptionValue( "cert" );
-        if( line.hasOption( "noqueue" ) ) {
-          submitResult = elog.submitNow(certificate);
-        }else{
-          submitResult = elog.submit(certificate);
-        }      
-      }else{  
+//      if( line.hasOption( "cert" ) ) {
+//        String certificate = line.getOptionValue( "cert" );
+//        if( line.hasOption( "noqueue" ) ) {
+//          submitResult = elog.submitNow(certificate);
+//        }else{
+//          submitResult = elog.submit(certificate);
+//        }
+//      }else{
         if( line.hasOption( "noqueue" ) ) {
           submitResult = elog.submitNow();
         }else{
           submitResult = elog.submit();
         }
-      }
+//      }
       if (submitResult > 0){
         System.out.println("The Entry was saved with lognumber "+submitResult);
       }else{
@@ -313,7 +318,7 @@ public class LogEntryCLI {
    * @param path
    * @return
    * @throws IOException 
-   * @see  http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
+   * @ref  http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
    */
   private static String readFile(String path) throws IOException {
     FileInputStream stream = new FileInputStream(new File(path));

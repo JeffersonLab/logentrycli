@@ -1,19 +1,45 @@
 plugins {
+    id 'java'
     id 'application'
 }
 
 tasks.withType(JavaCompile) {
-    options.release = 11
+    options.release = 8
     options.encoding = 'UTF-8'
-    options.compilerArgs += ["-Xlint:deprecation", "-Xlint:unchecked"]
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
 repositories {
     mavenCentral()
 }
 
-application {
-    mainClass = 'LogEntryCLI'
+dependencies {
+    implementation 'commons-cli:commons-cli:1.5.0'
+    implementation 'commons-io:commons-io:2.11.0'
+
+    implementation 'org.jlab:jlog:5.0.0'
+
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.jlab.elog.LogEntryCLI'
+    }
+
+}
+
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'org.jlab.elog.LogEntryCLI'
+    }
+    duplicatesStrategy "exclude"
+    archiveClassifier = "all"
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }
 
 group 'org.jlab'
