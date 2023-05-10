@@ -2,6 +2,12 @@ plugins {
     id 'application'
 }
 
+tasks.withType(JavaCompile) {
+    options.release = 11
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ["-Xlint:deprecation", "-Xlint:unchecked"]
+}
+
 repositories {
     mavenCentral()
 }
@@ -10,16 +16,6 @@ application {
     mainClass = 'LogEntryCLI'
 }
 
-group 'org.jlab.elog'
+group 'org.jlab'
 version '2.0'
 
-
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
-}
