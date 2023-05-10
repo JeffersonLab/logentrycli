@@ -5,25 +5,20 @@
 package org.jlab.elog;
 
 import org.jlab.jlog.LogEntry;
-import org.jlab.jlog.exception.LogException;
 import org.jlab.jlog.Body;
 import org.jlab.jlog.Reference;
-
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
@@ -36,7 +31,7 @@ public class LogEntryCLI {
   
   //Version identifier.  Increment for new releases and 
   //don't forget to tag the version in git repositior to match!
-  public static final String VERSION_ID = "1.2";;
+  public static final String VERSION_ID = "1.2";
   
   /**
    * Attempt to make an entry.  Exit with status code of
@@ -45,7 +40,7 @@ public class LogEntryCLI {
    */
   public static void main(String[] args) {
     Options options = buildOptions();
-    CommandLineParser parser = new BasicParser();
+    CommandLineParser parser = new DefaultParser();
     try {
         // parse the command line arguments
         CommandLine line = parser.parse( options, args );
@@ -68,21 +63,21 @@ public class LogEntryCLI {
   /**
    * Assign arguments extracted from the command line to Logentry API
    * methods and then call an appropriate sumbit method.
-   * @param line
+   * @param line command line to be parsed
    * @return int 0 after successful submission, non-zero after failure
    */
   private static int makeEntry(CommandLine line) throws ParseException{
     
-    //Unless otherwise specified, entires are plain text
+    //Unless otherwise specified, entries are plain text
     Body.ContentType bodyFmt = Body.ContentType.TEXT;
     
     try {
-      
+
+      ArrayList<String> missing = new ArrayList<>();
       /*  If we don't take over checking for required options
        * the user will get an error message when he types -h
        * or --help that he is missing required fields -t and -l
-       */ 
-      ArrayList<String> missing = new ArrayList();
+       */
       if (! line.hasOption("title")){
         missing.add("title (-t)");
       }
@@ -110,16 +105,16 @@ public class LogEntryCLI {
         }
       }
 
-      /**
+      /*
        * The user may specify multiple attachments and optionally
        * captions to go with them.  We'll receive both sets as 
        * arrays via respective getOptionValues() calls and then we
-       * match them up using their indeces.  The first caption goes
+       * match them up using their index.  The first caption goes
        * with the first attachment, the second with the second, and so
        * on.
        */
       if( line.hasOption( "attach" ) ) {
-        String captionToUse = new String();
+        String captionToUse = "";
         String[] attArr = line.getOptionValues( "attach" );
         for (int i=0; i<attArr.length; i++){
           // With attachments we have to look for a corresponding caption
@@ -141,8 +136,8 @@ public class LogEntryCLI {
       
       if( line.hasOption( "link" ) ) {
         String[] links = line.getOptionValues( "link" );
-        for (int i=0; i<links.length; i++){
-          Reference ref = new Reference("logbook", links[i]);
+        for (String link : links) {
+          Reference ref = new Reference("logbook", link);
           elog.addReference(ref);
         }
         
@@ -202,7 +197,7 @@ public class LogEntryCLI {
   
   /**
    * Prints a help/usage message of acceptable options
-   * @param options 
+   * @param options the Options collection
    */
   private static void showUsage(Options options){
       HelpFormatter formatter = new HelpFormatter();
@@ -221,75 +216,73 @@ public class LogEntryCLI {
    * We don't use the commons-cli isRequired because it throws an
    * error before we can check to see if the user just wanted help
    * (-h or --help).
-   * @return 
+   * @return Options
    */
   private static Options buildOptions(){
-    Option help = OptionBuilder.withArgName("help")
-                                .withLongOpt("help")
-                                .withDescription(  "Prints this message" )
-                                .create( "h" );
-    Option logbook  = OptionBuilder.withArgName("logbook")
-                                .withLongOpt("logbook")
+    Option help = Option.builder("h")
+                                .longOpt("help")
+                                .desc(  "Prints this message" )
+                                .build();
+    Option logbook  = Option.builder("l")
+                                .longOpt("logbook")
                                 .hasArg()
-                                .withDescription(  "(required) A valid logbook name" )
-                                .create( "l" );
-    Option title  = OptionBuilder.withArgName("title")
-                                .withLongOpt("title")
+                                .desc(  "(required) A valid logbook name" )
+                                .build();
+    Option title  = Option.builder("title")
+                                .longOpt("title")
                                 .hasArg()
-                                .withDescription(  "(required) The title/keywords for the entry (max 255 chars)" )
-                                .create( "t" );    
-    Option attachment  = OptionBuilder.withArgName("file")
-                                .withLongOpt("attach")
+                                .desc(  "(required) The title/keywords for the entry (max 255 chars)" )
+                                .build();
+    Option attachment  = Option.builder("a")
+                                .longOpt("attach")
                                 .hasArg()
-                                .withDescription( "A /path/to/a/file to attach" )
-                                .create( "a" );
-    Option body  = OptionBuilder.withArgName("body")
-                                .withLongOpt("body")
+                                .desc( "A /path/to/a/file to attach" )
+                                .build();
+    Option body  = Option.builder("b")
+                                .longOpt("body")
                                 .hasArg()
-                                .withDescription( "A /path/to/a/text/file or '-' to read StdIn" )
-                                .create( "b" );   
-    Option tag  = OptionBuilder.withArgName("tag")
-                                .withLongOpt("tag")
+                                .desc( "A /path/to/a/text/file or '-' to read StdIn" )
+                                .build();
+    Option tag  = Option.builder("g")
+                                .longOpt("tag")
                                 .hasArg()
-                                .withDescription( "A valid tag" )
-                                .create( "g" );
-    Option entrymaker  = OptionBuilder.withArgName("entrymaker")
-                                .withLongOpt("entrymaker")
+                                .desc( "A valid tag" )
+                                .build();
+    Option entrymaker  = Option.builder("e")
+                                .longOpt("entrymaker")
                                 .hasArg()
-                                .withDescription( "Name(s) of person(s) making the entry" )
-                                .create( "e" );
-    Option notify  = OptionBuilder.withArgName("notify")
-                                .withLongOpt("notify")
+                                .desc( "Name(s) of person(s) making the entry" )
+                                .build();
+    Option notify  = Option.builder("n")
+                                .longOpt("notify")
                                 .hasArg()
-                                .withDescription( "An email address" )
-                                .create( "n" );
-    Option caption  = OptionBuilder.withArgName("caption")
-                                .withLongOpt("caption")
+                                .desc( "An email address" )
+                                .build();
+    Option caption  = Option.builder("c")
+                                .longOpt("caption")
                                 .hasArg()
-                                .withDescription( "Caption(s) to go with attachment(s)" )
-                                .create( "c" );
-    Option link  = OptionBuilder.withArgName("lognumber")
-                                .withLongOpt("link")
-                                .withDescription("Link to the specified existing lognumber" )
+                                .desc( "Caption(s) to go with attachment(s)" )
+                                .build();
+    Option link  = Option.builder("link")
+                                .desc("Link to the specified existing lognumber" )
                                 .hasArg()                    
-                                .create();    
-    Option html  = OptionBuilder.withLongOpt("html")
-                                .withDescription("Interpret body as HTML instead of text" )
-                                .create();
-    Option xml  = OptionBuilder.withLongOpt("xml")
-                                .withDescription("Print XML version of logentry to StdOut" )
-                                .create();
-    Option noqueue  = OptionBuilder.withLongOpt("noqueue")
-                                .withDescription("Do not queue entry. Exit with error if immediate submit fails" )
-                                .create();
-    Option nosubmit  = OptionBuilder.withLongOpt("nosubmit")
-                                .withDescription("Do not submit entry." )
-                                .create();
-    Option cert  = OptionBuilder.withArgName("certificate")
-                                .withLongOpt("cert")
+                                .build();
+    Option html  = Option.builder("html")
+                                .desc("Interpret body as HTML instead of text" )
+                                .build();
+    Option xml  = Option.builder("xml")
+                                .desc("Print XML version of logentry to StdOut" )
+                                .build();
+    Option noqueue  = Option.builder("noqueue")
+                                .desc("Do not queue entry. Exit with error if immediate submit fails" )
+                                .build();
+    Option nosubmit  = Option.builder("nosubmit")
+                                .desc("Do not submit entry." )
+                                .build();
+    Option cert  = Option.builder("cert")
                                 .hasArg()
-                                .withDescription(  "The path to a PEM format logbook SSL certificate file to use" )
-                                .create();
+                                .desc(  "The path to a PEM format logbook SSL certificate file to use" )
+                                .build();
     
     
     Options options = new Options();
@@ -315,34 +308,30 @@ public class LogEntryCLI {
    
   /**
    * Slurps a file into a string
-   * @param path
-   * @return
-   * @throws IOException 
-   * @ref  http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
+   * @param path file system path
+   * @return the contents of the file
+   * @throws IOException file I/O exception
+   * @see  <a href="http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file">
+   *     stackoverflow discussion</a>
    */
   private static String readFile(String path) throws IOException {
-    FileInputStream stream = new FileInputStream(new File(path));
-    try {
+    try (FileInputStream stream = new FileInputStream(path)) {
       FileChannel fc = stream.getChannel();
       MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
       /* Instead of using default, pass in a decoder. */
-      return Charset.forName("UTF-8").decode(bb).toString();
-    }
-    finally {
-      stream.close();
+      return StandardCharsets.UTF_8.decode(bb).toString();
     }
   }
   
   /**
-   * Returns the contents of StdIn as a string
-   * @return 
+   * {@return the contents of StdIn as a string}
    */
   private static String readStdIn(){
     String body = null; 
     // Read the input from stdin
     InputStream in = System.in;
     try {
-        body = IOUtils.toString(System.in); 
+        body = IOUtils.toString(System.in, StandardCharsets.UTF_8);
     } catch (IOException ioe) {
         System.err.println("IO error trying to read message!");
         System.exit(1);
@@ -353,16 +342,16 @@ public class LogEntryCLI {
   }
     
   /**
-   * Concentenates the contents of the array of strings with commas.
+   * Concatenates the contents of the array of strings with commas.
    * How annoying that Java Strings don't have a native join function
    */
   private static String join(String[] strArr){
-    String joined = new String();
+    StringBuilder joined = new StringBuilder();
     for (int i=0; i<strArr.length; i++){
-      if (i > 0){ joined = joined + ", ";}
-      joined = joined + strArr[i];      
+      if (i > 0){ joined.append(", ");}
+      joined.append(strArr[i]);
     }
-    return joined;
+    return joined.toString();
   }
   
 }
