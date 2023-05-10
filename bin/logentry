@@ -1,0 +1,19 @@
+#!/bin/bash
+# An executable shell script wrapper around a Java Command Line Utility
+# for making log entries 
+
+
+#Edit the path below to indicate the location where the
+#LogentryCLI.jar file resides.
+JAR=/site/ace/certified/apps/logentrycli/pro/LogentryCLI.jar
+
+# Test if user has java in path
+path_to_executable=$(which java)
+if [ $? -eq 0 -a -x "$path_to_executable" ] ; then
+   java -jar $JAR "$@"
+else
+   echo "Error: Java executable not found."
+   echo "Please make sure java is set in your PATH environment variable."
+   exit 1
+fi
+

@@ -1,0 +1,41 @@
+The following steps are used to build and install the application:
+
+1.  Change to a clean working directory and check out the the source code.
+
+git clone ssh://devl00/usr/devsite/git/logentrycli.git 
+cd logentrycli
+
+2. (Optional) Switch to a specific tagged version
+
+
+# Use git tag to list available versions
+git tag
+# Checkout the one that is desired
+git checkout 1.0
+
+
+3. Compile/Build using ant
+
+ant dist 
+
+4. Recursively copy the contents of the dist subdirectory to a suitable install location.  
+
+cp -r dist/* /cs/certified/apps/logentrycli/1.0
+
+5. Edit the contents of bin/logentry and edit the JAR variable to point to the
+location where you installed the jar file in step 4 (or perhaps even better use a pro link).
+
+vi bin/logentry
+JAR=/cs/certified/apps/logentrycli/pro/logentrycli.jar
+
+6. Copy the executable wrapper script to a directory from which users can find
+and excute it.
+
+cp bin/logentry /cs/certified/bin/logentry
+chmod 555 /cs/certified/bin/logentry
+
+7. (Optional) If the jlog2.jar file can be found on the classpath listed in
+manifest.mf, the copy in the dist/lib directory can be removed.
+
+rm /cs/certified/apps/logentrycli/1.0/lib/jlog2.jar
+
