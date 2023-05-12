@@ -6,6 +6,7 @@
 package org.jlab.elog;
 
 import org.jlab.jlog.LogEntry;
+import org.jlab.jlog.Library;
 import org.jlab.jlog.Body;
 import org.jlab.jlog.Reference;
 
@@ -16,6 +17,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLine;
@@ -93,6 +95,16 @@ public class LogEntryCLI {
                 // Throw the same ParseException that commons-cli would have
                 throw new ParseException(message);
             }
+
+            /*
+             * Did the user specif an alternate properties file to use for
+             * example to specify an alternate logbook server.
+             */
+            if ( line.hasOption("config")){
+                setConfig(line.getOptionValue( "config" ));
+            }
+
+
 
             LogEntry elog = new LogEntry(line.getOptionValue("title"),
                     join(line.getOptionValues("logbook")));
@@ -207,6 +219,23 @@ public class LogEntryCLI {
 
 
     /**
+     * Sets the Logentry library configuration to use values from an alternate
+     * properties file.
+     *
+     * @see https://logbooks.jlab.org/files/eloglib/javadoc/index.html
+     * @param filename
+     */
+    private static void setConfig(String filename) throws IOException {
+        Properties configProps = new Properties();
+        FileInputStream in = new FileInputStream(filename);
+        configProps.load(in);
+        in.close();
+        Library.setConfiguration(configProps);
+    }
+
+
+
+    /**
      * Defines the acceptable command line options and their parameters.
      * We don't use the commons-cli isRequired because it throws an
      * error before we can check to see if the user just wanted help
@@ -258,27 +287,37 @@ public class LogEntryCLI {
                 .hasArg()
                 .desc("Caption(s) to go with attachment(s)")
                 .build();
-        Option link = Option.builder("link")
+        Option link = Option.builder()
+                .longOpt("link")
                 .desc("Link to the specified existing lognumber")
                 .hasArg()
                 .build();
         Option html = Option.builder("html")
+                .longOpt("html")
                 .desc("Interpret body as HTML instead of text")
                 .build();
-        Option xml = Option.builder("xml")
+        Option xml = Option.builder()
+                .longOpt("xml")
                 .desc("Print XML version of logentry to StdOut")
                 .build();
-        Option noqueue = Option.builder("noqueue")
+        Option noqueue = Option.builder()
+                .longOpt("noqueue")
                 .desc("Do not queue entry. Exit with error if immediate submit fails")
                 .build();
-        Option nosubmit = Option.builder("nosubmit")
+        Option nosubmit = Option.builder()
+                .longOpt("nosubmit")
                 .desc("Do not submit entry.")
                 .build();
-        Option cert = Option.builder("cert")
+        Option cert = Option.builder()
+                .longOpt("cert")
                 .hasArg()
                 .desc("The path to a PEM format logbook SSL certificate file to use")
                 .build();
-
+        Option config  = Option.builder()
+                .longOpt("config")
+                .hasArg()
+                .desc(  "The path to an alternative properties configuration file" )
+                .build();
 
         Options options = new Options();
         options.addOption(help);
@@ -296,6 +335,7 @@ public class LogEntryCLI {
         options.addOption(noqueue);
         options.addOption(nosubmit);
         options.addOption(cert);
+        options.addOption( config );
 
         return options;
     }
