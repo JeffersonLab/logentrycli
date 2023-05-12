@@ -37,4 +37,3 @@ from /usr/csite/certified/bin to the PRO version
 
 cd  /usr/csite/certified/bin
 ln -s  /cs/certified/apps/logentrycli/PRO/bin/logentry .
-
