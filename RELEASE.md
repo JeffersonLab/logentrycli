@@ -1,4 +1,4 @@
-#Release notes for *logentry*
+# Release notes for *logentry*
 
 ## Version 2.0 - May 16, 2023
 - Switch from ant to gradle for building
