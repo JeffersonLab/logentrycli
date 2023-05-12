@@ -3,6 +3,12 @@ plugins {
     id 'application'
 }
 
+group 'org.jlab'
+version '2.0'
+def bundleClassifier = 'bundle'
+
+defaultTasks 'clean', 'bundle', 'make'
+
 tasks.withType(JavaCompile) {
     options.release = 8
     options.encoding = 'UTF-8'
@@ -16,9 +22,7 @@ repositories {
 dependencies {
     implementation 'commons-cli:commons-cli:1.5.0'
     implementation 'commons-io:commons-io:2.11.0'
-
     implementation 'org.jlab:jlog:5.0.0'
-
 }
 
 
@@ -29,19 +33,42 @@ jar {
 
 }
 
+clean.doFirst {
+    delete "${rootDir}/lib"
+}
 
-task fatJar(type: Jar) {
+// task responsible to create the tmp/work dir
+task prepareDirs {
+    mustRunAfter clean
+    doLast {
+        mkdir "${rootDir}/lib"
+    }
+}
+
+task bundle(type: Jar) {
+    description 'Builds a fat jar file with all dependencies bundled up inside.'
     manifest {
         attributes 'Main-Class': 'org.jlab.elog.LogEntryCLI'
     }
     duplicatesStrategy "exclude"
-    archiveClassifier = "bundle"
+    archiveClassifier = bundleClassifier
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
 }
 
-group 'org.jlab'
-version '2.0'
+task make(type:Copy){
+    dependsOn 'prepareDirs'
+    dependsOn 'bundle'
+    mustRunAfter 'bundle'
+    description 'Copies bundle jar file to lib directory and renames it'
+    def bundleJarFile = project.name + '-' + project.version + '-' + bundleClassifier + '.jar'
+    def libJarFile = project.name + '.jar'
+    from "${buildDir}/libs/${bundleJarFile}"
+    into "${rootDir}/lib"
+    rename { fileName -> libJarFile }
+    println "${bundleJarFile} was copied to lib directory as ${libJarFile}"
+}
+
 
