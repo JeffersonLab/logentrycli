@@ -52,12 +52,11 @@ echo location of your Java installation.
 goto fail
 
 :execute
-@rem Setup the command line
 
 set JARFILE=%APP_HOME%\..\lib\logentrycli.jar
-
 @rem Execute logentry tool
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% -jar "%JARFILE%" %*
+
 :end
 
 @rem End local scope for the variables with windows NT shell
@@ -70,3 +69,8 @@ set EXIT_CODE=%ERRORLEVEL%
 if %EXIT_CODE% equ 0 set EXIT_CODE=1
 if not ""=="%GRADLE_EXIT_CONSOLE%" exit %EXIT_CODE%
 exit /b %EXIT_CODE%
+
+:mainEnd
+if "%OS%"=="Windows_NT" endlocal
+
+:omega
