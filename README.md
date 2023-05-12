@@ -3,30 +3,33 @@ A utility for making entries to https://logbooks.jlab.org via command line.
 
 
 ## Build
-This project is built with [Java 17](https://adoptium.net/) (compiled to Java 8 bytecode), and uses the [Gradle 7](https://gradle.org/) build tool to automatically download dependencies and build the project from source:
+This project is built with [Java 17](https://adoptium.net/) (compiled to Java 8 bytecode), and uses the [Gradle](https://gradle.org/) build tool to automatically download dependencies and build the project from source:
 
 ```
 git clone https://github.com/JeffersonLab/logentrycli
 cd logentrycli
-./gradlew build
+./gradlew clean
+./gradlew make
 ```
-
 **Note**: If you do not already have Gradle installed, it will be installed automatically by the wrapper script included in the source
-
 **Note for JLab On-Site Users**: Jefferson Lab has an intercepting [proxy](https://gist.github.com/slominskir/92c25a033db93a90184a5994e71d0b78) 
 so it's necessary to tell gradle to trust the SSL certificate that it uses. 
+
 ```
 # Example for an ACE Linux
-./gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts build
+./gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts make
 ```
 
-## Install
+## Execute
 
+The simplest way to execut the program is using the wrapper scripts located in the bin directory which contains
+logentry.bat for Windows and logentry for linux.
 
 ## Usage
+Executing the program with the -h flag will print the following usage instructions.
 
 ```
-PS C:\Users\theo\Projects> java -jar q:\LogentryCLI-2.0-all.jar -h
+PS C:\Users\theo\Projects> .\bin\logentry -h
 logentry command line utility version 1.2
 usage: logentry [options]
  -a,--attach <file>             A /path/to/a/file to attach
