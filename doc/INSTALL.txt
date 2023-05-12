@@ -1,41 +1,40 @@
-The following steps are used to build and install the application:
+The following steps are used to build and install the application in /cs/certified
 
-1.  Change to a clean working directory and check out the the source code.
+Note that although the compilation in step #3 must use Java 17 (available on RHEL9, but not on 7), the
+resulting jar file from the compilation produces compatible bytecode will run on the older
+java runtime on our RHEL7  systems.
 
-git clone ssh://devl00/usr/devsite/git/logentrycli.git 
+1.  On an RHEL9 dev workstation, change to a clean working directory and check
+out the the source code from github.
+
+git clone https://github.com/JeffersonLab/logentrycli.git
 cd logentrycli
 
 2. (Optional) Switch to a specific tagged version
 
-
 # Use git tag to list available versions
 git tag
 # Checkout the one that is desired
-git checkout 1.0
+git checkout 2.0
 
+3. Compile/Build using gradle
 
-3. Compile/Build using ant
+gradlew clean
+gradlew make
 
-ant dist 
+4. Recursively copy the contents of the bin and lib subdirectories to a suitable install location.
 
-4. Recursively copy the contents of the dist subdirectory to a suitable install location.  
+cp -r bin/* lib/* /cs/certified/apps/logentrycli/2.0/
+chmod 555 /cs/certified/apps/logentrycli/2.0/bin/logentry
 
-cp -r dist/* /cs/certified/apps/logentrycli/1.0
+5.  Rotate the PRO link
 
-5. Edit the contents of bin/logentry and edit the JAR variable to point to the
-location where you installed the jar file in step 4 (or perhaps even better use a pro link).
+cd /cs/certifieds/apps/logentrycli
+rm PRO; ln -s 2.0 PRO
 
-vi bin/logentry
-JAR=/cs/certified/apps/logentrycli/pro/logentrycli.jar
+6. If necessary, create a symbolic link to the PRO wrapper script
+from /usr/csite/certified/bin to the PRO version
 
-6. Copy the executable wrapper script to a directory from which users can find
-and excute it.
-
-cp bin/logentry /cs/certified/bin/logentry
-chmod 555 /cs/certified/bin/logentry
-
-7. (Optional) If the jlog2.jar file can be found on the classpath listed in
-manifest.mf, the copy in the dist/lib directory can be removed.
-
-rm /cs/certified/apps/logentrycli/1.0/lib/jlog2.jar
+cd  /usr/csite/certified/bin
+ln -s  /cs/certified/apps/logentrycli/PRO/bin/logentry .
 
