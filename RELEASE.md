@@ -12,7 +12,7 @@
 - Add README.md with general build help
 
 ## Version 1.3 - August 22, 2016
-- Add --link option for referencing prior log entries.
+- Add --config option for specifiying path to alternate configuration.
 
 ## Version 1.2 - September 16, 2013
  - Add --link option for referencing prior log entries.
