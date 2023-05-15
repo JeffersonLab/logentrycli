@@ -15,7 +15,7 @@ cd logentrycli
 # Use git tag to list available versions
 git tag
 # Checkout the one that is desired
-git checkout 2.0
+git checkout v2.0
 
 3. Compile/Build using gradle
 
