@@ -1,6 +1,6 @@
 # Release notes for *logentry*
 
-## Version 2.0 - May 16, 2023
+## Version 2.0 - May 15, 2023
 - Switch from ant to gradle for building
 - Update org.apache.commons.cli dependencies to version 1.5 
   - Update code to avoid use of methods deprecated by new version 
