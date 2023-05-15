@@ -21,8 +21,8 @@ git checkout v2.0
 
 # The special SSL certificates are need to operate through JLab intercepting proxy
 
-gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts clean
-gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts make
+./gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts clean
+./gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts make
 
 4. Recursively copy the contents of the bin and lib subdirectories to a suitable install location.
 
