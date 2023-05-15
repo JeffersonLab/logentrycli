@@ -11,7 +11,7 @@
 - Add bin/logentry.bat for executing on Windows
 - Add README.md with general build help
 
-## Version 1.3 - September 16, 2013
+## Version 1.3 - August 22, 2016
 - Add --link option for referencing prior log entries.
 
 ## Version 1.2 - September 16, 2013
