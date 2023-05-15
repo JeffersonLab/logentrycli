@@ -10,7 +10,7 @@ out the the source code from github.
 git clone https://github.com/JeffersonLab/logentrycli.git
 cd logentrycli
 
-2. (Optional) Switch to a specific tagged version
+2. (Recommended) Switch to a specific tagged version
 
 # Use git tag to list available versions
 git tag
@@ -29,13 +29,23 @@ gradlew -Djavax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts make
 cp -r bin/* lib/* /cs/certified/apps/logentrycli/2.0/
 chmod 555 /cs/certified/apps/logentrycli/2.0/bin/logentry
 
-5.  Rotate the PRO link
+
+5. Perform a simply sanity test by making a minimalist log entry
+# User executing the test must have a valid .elogcert
+/cs/certified/apps/logentrycli/2.0/bin/logentry -t test -l TLOG
+
+
+6.  Rotate the PRO link
 
 cd /cs/certifieds/apps/logentrycli
 rm PRO; ln -s 2.0 PRO
 
-6. If necessary, create a symbolic link to the PRO wrapper script
+7. If necessary, create a symbolic link to the PRO wrapper script
 from /usr/csite/certified/bin to the PRO version
 
 cd  /usr/csite/certified/bin
 ln -s  /cs/certified/apps/logentrycli/PRO/bin/logentry .
+
+
+
+
