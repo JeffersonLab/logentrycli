@@ -61,3 +61,23 @@ once to make multiple inclusions. For more help see:
 https://logbooks.jlab.org/content/unix-command-line
 
 ```
+
+## Installed Executables
+
+The logentry utility is pre-installed and available at the following paths:
+
+### ACE Path
+```
+/cs/certified/apps/logentrycli/2.0/bin/logentry -h
+```
+
+### CUE Path
+On Linux
+```
+/site/ace/certified/apps/logentrycli/2.0/bin/logentry -h
+```
+
+On Windows
+```
+k:\ace\certified\apps\logentrycli\2.0\bin\logentrycli -h
+```
