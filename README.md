@@ -1,5 +1,5 @@
 # logentrycli
-A utility for making entries to https://logbooks.jlab.org via command line.  It provides a wrapper around [JeffersonLab/jlog](https://github.com/JeffersonLab/jlog) and invokable shell scripts.
+A utility for making entries to https://logbooks.jlab.org via command line.  It provides a wrapper around [JeffersonLab/jlog](https://github.com/JeffersonLab/jlog) via invokable shell scripts for Linux and Windows.
 
 
 ## Build
