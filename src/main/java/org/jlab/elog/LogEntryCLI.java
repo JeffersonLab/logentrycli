@@ -195,7 +195,11 @@ public class LogEntryCLI {
 
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            if (line.hasOption("debug")){
+              e.printStackTrace();
+            } else {
+              System.err.println(e.getMessage());
+            }
             return 1;
         }
         return 0;
@@ -318,6 +322,10 @@ public class LogEntryCLI {
                 .hasArg()
                 .desc(  "The path to an alternative properties configuration file" )
                 .build();
+        Option debug = Option.builder()
+                .longOpt("debug")
+                .desc("Enable debugging")
+                .build();
 
         Options options = new Options();
         options.addOption(help);
@@ -335,7 +343,8 @@ public class LogEntryCLI {
         options.addOption(noqueue);
         options.addOption(nosubmit);
         options.addOption(cert);
-        options.addOption( config );
+        options.addOption(config);
+        options.addOption(debug);
 
         return options;
     }
