@@ -1,5 +1,8 @@
 # Release notes for *logentry*
 
+## Version 2.1 - November 06, 2024
+- Update JLog dependency to 5.1.0. 
+
 ## Version 2.0 - May 15, 2023
 - Switch from ant to gradle for building
 - Update org.apache.commons.cli dependencies to version 1.5 

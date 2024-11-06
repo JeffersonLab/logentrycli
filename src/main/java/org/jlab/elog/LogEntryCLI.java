@@ -36,7 +36,7 @@ public class LogEntryCLI {
 
     //Version identifier.  Increment for new releases and
     //don't forget to tag the version in git repositior to match!
-    public static final String VERSION_ID = "2.0";
+    public static final String VERSION_ID = "2.1";
 
     /**
      * Attempt to make an entry.  Exit with status code of
