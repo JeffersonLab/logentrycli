@@ -39,7 +39,7 @@ cp -r bin lib /cs/certified/apps/logentrycli/2.1/
 chmod 555 /cs/certified/apps/logentrycli/2.1/bin/logentry
 ```
 
-### Perform a simplye sanity test
+### Perform a simple sanity test
 ```bash
 # Make a minimalist log entry
 # User executing the test must have a valid ~/.elogcert
