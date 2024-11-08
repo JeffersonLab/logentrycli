@@ -86,5 +86,5 @@ On Linux
 
 On Windows
 ```
-k:\ace\certified\apps\logentrycli\2.1\bin\logentrycli -h
+k:\ace\certified\apps\logentrycli\2.1\bin\logentry.bat -h
 ```
