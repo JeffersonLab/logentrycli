@@ -6,7 +6,24 @@ Following the update of logbooks.jlab.org to Redhat Enterprise Linux 9, versions
 
 In order to use logentrycli on a Redhat 7 system which only has the default java 8 for example, the following steps are necessary.
  1. Install a newer JDK.  `yum install java-latest-openjdk`
- 2. Set JAVA_HOME to point to the new JDK before executing logentrycli.  For example if the command above installed version 18 into /usr/lib/jvm/java-18-openjdk-18.0.2.0.9-1.rolling.el7.x86_64 then one would `setenv JAVA_HOME /usr/lib/jvm/java-18-openjdk-18.0.2.0.9-1.rolling.el7.x86_64`
+ 2. Set JAVA_HOME to point to the new JDK before executing logentrycli.
+ 
+ For example on jlabl5
+ ```
+ setenv JAVA_HOME /etc/alternatives/jre_23_openjdk
+ /site/ace/certified/apps/logentrycli/2.1/bin/logentry -h
+```
+
+Executing the program with an out-of-date version of Java in your path will produce an error along the lines of:
+
+```txt
+Error: A JNI error has occurred, please check your installation and try again
+Exception in thread "main" java.lang.UnsupportedClassVersionError: org/jlab/elog/LogEntryCLI
+has been compiled by a more recent version of the Java Runtime (class file version 55.0),
+this version of the Java Runtime only recognizes class file versions up to 52.0
+```
+
+
 
 ## Build
 This project is built with [Java 17](https://adoptium.net/) (compiled to Java 11 bytecode), and uses the [Gradle](https://gradle.org/) build tool to automatically download dependencies and build the project from source:
@@ -75,12 +92,16 @@ The logentry utility is pre-installed and available at the following paths:
 
 ### ACE Path
 ```
+# If necessary set JAVA_HOME to at least version 11
+# for example: setenv JAVA_HOME /etc/alternatives/jre_23_openjdk
 /cs/certified/apps/logentrycli/2.1/bin/logentry -h
 ```
 
 ### CUE Path
 On Linux
 ```
+# If necessary set JAVA_HOME to at least version 11
+# for example: setenv JAVA_HOME /etc/alternatives/jre_23_openjdk
 /site/ace/certified/apps/logentrycli/2.1/bin/logentry -h
 ```
 
